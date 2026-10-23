@@ -68,8 +68,8 @@
             </div>
         </nav>
     </aside>
-
-    <!-- Main Content -->
+    
+        <!-- Main Content -->
     <main class="flex-1 flex flex-col relative bg-[#151515] overflow-hidden">
         
         <!-- View: Dashboard -->
@@ -85,13 +85,11 @@
         </div>
 
         <!-- View: Global Chat -->
-        <div id="view-global-chat" class="flex-1 p-4 md:p-8 view-section hidden flex flex-col h-full">
-            <h2 class="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Global Chat</h2>
-            <div class="flex-1 bg-panel rounded-xl border border-gray-800 flex flex-col overflow-hidden max-w-4xl w-full mx-auto md:mx-0">
-                <div class="flex-1 p-4 overflow-y-auto space-y-4 bg-[#1a1a1a]" id="global-chat-messages">
-                    <!-- Global messages will load here -->
-                </div>
-                <div class="p-3 md:p-4 border-t border-gray-800 bg-panel flex gap-2">
+        <div id="view-global-chat" class="flex-1 p-4 md:p-8 view-section hidden flex flex-col h-full overflow-hidden">
+            <h2 class="text-2xl md:text-3xl font-bold mb-4 shrink-0">Global Chat</h2>
+            <div class="flex-1 bg-panel rounded-xl border border-gray-800 flex flex-col overflow-hidden max-w-4xl w-full mx-auto">
+                <div class="flex-1 p-4 overflow-y-auto space-y-4 bg-[#1a1a1a]" id="global-chat-messages"></div>
+                <div class="p-3 md:p-4 border-t border-gray-800 bg-panel flex gap-2 shrink-0">
                     <input type="text" id="global-chat-input" placeholder="Ketik pesan global..." class="flex-1 bg-gray-800 text-white px-3 md:px-4 py-2 text-sm md:text-base rounded-lg outline-none focus:border-accent border border-transparent">
                     <button onclick="sendGlobalChat()" class="bg-accent text-white hover:bg-accentHover px-4 py-2 rounded-lg transition-colors"><i data-lucide="send" class="w-4 h-4 md:w-5 md:h-5"></i></button>
                 </div>
@@ -112,56 +110,56 @@
         </div>
 
         <!-- View: Game Room -->
-        <div id="view-game-room" class="flex-1 hidden flex-col lg:flex-row h-full overflow-y-auto lg:overflow-hidden">
+        <div id="view-game-room" class="flex-1 hidden flex-col lg:flex-row h-full overflow-hidden">
             
-            <div class="flex-1 flex flex-col items-center justify-start lg:justify-center p-4 pt-14 lg:p-8 relative shrink-0">
-                <div class="mb-3 lg:mb-4 flex items-center justify-between w-full max-w-[480px]">
-                    <div class="flex items-center gap-2 lg:gap-3">
-                        <div class="w-10 h-10 lg:w-12 lg:h-12 bg-panel border border-gray-700 rounded-lg flex items-center justify-center shadow-md"><i data-lucide="user" class="text-gray-400 w-5 h-5 lg:w-6 lg:h-6"></i></div>
+            <div class="flex-1 flex flex-col items-center justify-start lg:justify-center p-2 lg:p-8 relative overflow-y-auto shrink-0">
+                <div class="mb-2 lg:mb-4 flex items-center justify-between w-full max-w-[420px]">
+                    <div class="flex items-center gap-2">
+                        <div class="w-9 h-9 lg:w-12 lg:h-12 bg-panel border border-gray-700 rounded-lg flex items-center justify-center shadow-md"><i data-lucide="user" class="text-gray-400 w-4 h-4 lg:w-6 lg:h-6"></i></div>
                         <div>
-                            <p class="font-bold text-sm lg:text-lg" id="opponent-name">Menunggu Lawan...</p>
-                            <p class="text-xs lg:text-sm text-gray-400" id="opponent-role">Bidak Hitam</p>
+                            <p class="font-bold text-xs lg:text-lg" id="opponent-name">Menunggu Lawan...</p>
+                            <p class="text-[10px] lg:text-sm text-gray-400" id="opponent-role">Bidak Lawan</p>
                         </div>
                     </div>
                 </div>
                 
-                <div class="bg-panel p-1.5 lg:p-2 rounded-xl border border-gray-800 shadow-2xl w-full max-w-[480px]">
+                <div class="bg-panel p-1.5 lg:p-2 rounded-xl border border-gray-800 shadow-2xl w-full max-w-[420px]">
                     <div id="board" class="w-full"></div>
                 </div>
                 
-                <div class="mt-3 lg:mt-4 flex items-center justify-between w-full max-w-[480px]">
-                    <div class="flex items-center gap-2 lg:gap-3">
-                        <div class="w-10 h-10 lg:w-12 lg:h-12 bg-accent rounded-lg flex items-center justify-center shadow-md"><i data-lucide="user" class="text-white w-5 h-5 lg:w-6 lg:h-6"></i></div>
+                <div class="mt-2 lg:mt-4 flex items-center justify-between w-full max-w-[420px]">
+                    <div class="flex items-center gap-2">
+                        <div class="w-9 h-9 lg:w-12 lg:h-12 bg-accent rounded-lg flex items-center justify-center shadow-md"><i data-lucide="user" class="text-white w-4 h-4 lg:w-6 lg:h-6"></i></div>
                         <div>
-                            <p class="font-bold text-sm lg:text-lg" id="my-name-display">Player1 (Kamu)</p>
-                            <p class="text-xs lg:text-sm text-gray-400" id="my-role-display">Bidak Putih</p>
+                            <p class="font-bold text-xs lg:text-lg" id="my-name-display">Player (Kamu)</p>
+                            <p class="text-[10px] lg:text-sm text-gray-400" id="my-role-display">Bidak Kamu</p>
                         </div>
                     </div>
                 </div>
 
-                <div id="invite-link-container" class="mt-6 w-full max-w-[480px] bg-gray-800 p-4 rounded-lg hidden">
-                    <p class="text-sm text-gray-400 mb-2">Bagikan link ini ke temanmu:</p>
+                <div id="invite-link-container" class="mt-4 w-full max-w-[420px] bg-gray-800 p-3 rounded-lg hidden">
+                    <p class="text-xs text-gray-400 mb-1">Bagikan link ini ke temanmu:</p>
                     <div class="flex gap-2">
-                        <input type="text" id="invite-link-input" readonly class="flex-1 bg-[#121212] text-sm px-3 py-2 rounded border border-gray-700 outline-none text-gray-300">
-                        <button onclick="copyInviteLink()" class="bg-accent px-4 py-2 rounded text-sm hover:bg-accentHover">Salin</button>
+                        <input type="text" id="invite-link-input" readonly class="flex-1 bg-[#121212] text-xs px-2 py-1.5 rounded border border-gray-700 outline-none text-gray-300">
+                        <button onclick="copyInviteLink()" class="bg-accent px-3 py-1.5 rounded text-xs hover:bg-accentHover">Salin</button>
                     </div>
                 </div>
             </div>
             
-            <div class="w-full lg:w-80 h-[350px] lg:h-full bg-panel border-t lg:border-t-0 lg:border-l border-gray-800 flex flex-col shadow-[-10px_0_15px_rgba(0,0,0,0.2)] z-10 mt-6 lg:mt-0 shrink-0">
-                <div class="p-3 lg:p-4 border-b border-gray-800 flex items-center justify-between bg-panel">
+            <div class="w-full lg:w-80 flex-1 lg:flex-none lg:h-full bg-panel border-t lg:border-t-0 lg:border-l border-gray-800 flex flex-col shadow-2xl overflow-hidden">
+                <div class="p-3 lg:p-4 border-b border-gray-800 flex items-center justify-between bg-panel shrink-0">
                     <div class="flex items-center gap-2">
                         <i data-lucide="message-circle" class="w-4 h-4 lg:w-5 lg:h-5 text-accent"></i>
                         <h3 class="font-bold text-sm lg:text-base">Room Chat</h3>
                     </div>
                 </div>
                 
-                <div class="flex-1 p-3 lg:p-4 overflow-y-auto space-y-2 lg:space-y-3 bg-[#161616]" id="room-chat-messages"></div>
+                <div class="flex-1 p-3 overflow-y-auto space-y-2 bg-[#161616]" id="room-chat-messages"></div>
                 
-                <div class="p-3 lg:p-4 border-t border-gray-800 flex gap-2 bg-panel">
-                    <input type="text" id="room-chat-input" placeholder="Ketik pesan..." class="flex-1 bg-gray-800 text-white px-3 py-2 text-sm lg:text-base rounded-lg outline-none focus:border-accent border border-transparent">
+                <div class="p-3 border-t border-gray-800 flex gap-2 bg-panel shrink-0">
+                    <input type="text" id="room-chat-input" placeholder="Ketik pesan..." class="flex-1 bg-gray-800 text-white px-3 py-2 text-sm rounded-lg outline-none focus:border-accent border border-transparent">
                     <button onclick="sendRoomChat()" class="bg-accent hover:bg-accentHover transition-colors px-3 py-2 rounded-lg text-white">
-                        <i data-lucide="send" class="w-4 h-4 lg:w-5 lg:h-5"></i>
+                        <i data-lucide="send" class="w-4 h-4"></i>
                     </button>
                 </div>
             </div>
@@ -171,7 +169,7 @@
     <!-- FIREBASE MODULE SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-        import { getDatabase, ref, set, push, onValue, onChildAdded, update, remove } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+        import { getDatabase, ref, set, push, onValue, onChildAdded, update } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyB44Yu2OigjsIofTrxsr2BpQtDsloW4rB8",
@@ -186,17 +184,15 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Core Variables
         let myUsername = "Player_" + Math.floor(Math.random() * 10000);
         let currentRoomId = null;
-        let myColor = 'w'; // 'w' for white (Host), 'b' for black (Guest)
+        let myColor = 'w'; 
         let board = null;
         let game = new Chess();
 
         document.getElementById('username-display').innerText = "Welcome, " + myUsername;
         document.getElementById('mobile-username-display').innerText = myUsername;
 
-        // UI Helpers
         window.toggleSidebar = () => {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
@@ -224,10 +220,8 @@
             if(viewId === 'game-room') setTimeout(() => { if(board) board.resize(); }, 100);
         };
 
-        // Chessboard Config
         function onDragStart (source, piece) {
             if (game.game_over()) return false;
-            // Only allow dragging own pieces and only if it's your turn
             if ((myColor === 'w' && piece.search(/^b/) !== -1) || 
                 (myColor === 'b' && piece.search(/^w/) !== -1)) {
                 return false;
@@ -239,23 +233,21 @@
             var move = game.move({ from: source, to: target, promotion: 'q' });
             if (move === null) return 'snapback';
             
-            // Push move to Firebase
             if(currentRoomId) {
                 update(ref(db, 'rooms/' + currentRoomId), {
-                    fen: game.fen()
+                    fen: game.fen(),
+                    turn: game.turn()
                 });
                 push(ref(db, 'rooms/' + currentRoomId + '/chat'), {
                     type: 'system',
-                    text: `${myUsername} pindah ke ${move.to}`
+                    text: `${myUsername} (${myColor === 'w' ? 'Putih' : 'Hitam'}) melangkah ke ${move.to}`
                 });
             }
         }
         function onSnapEnd () { board.position(game.fen()); }
 
         function initGame(orientation) {
-            if(board) {
-                board.destroy();
-            }
+            if(board) { board.destroy(); }
             game.reset();
             board = Chessboard('board', {
                 draggable: true,
@@ -268,27 +260,24 @@
             });
             setTimeout(() => board.resize(), 150);
             
-            // Adjust UI labels based on role
             document.getElementById('my-name-display').innerText = myUsername + " (Kamu)";
-            document.getElementById('my-role-display').innerText = orientation === 'w' ? "Bidak Putih" : "Bidak Hitam";
+            document.getElementById('my-role-display').innerText = orientation === 'w' ? "Bidak Putih (Host)" : "Bidak Hitam (Guest)";
         }
 
-        // Room Management
         window.createRoom = () => {
             currentRoomId = Math.random().toString(36).substr(2, 6).toUpperCase();
             myColor = 'w';
             
-            // Set initial DB State
             set(ref(db, 'rooms/' + currentRoomId), {
                 fen: game.fen(),
                 host: myUsername,
-                guest: null
+                guest: null,
+                turn: 'w'
             });
-
-            // Set UI
-            document.getElementById('opponent-name').innerText = "Menunggu Lawan...";
             
-            // Show invite link
+            document.getElementById('opponent-name').innerText = "Menunggu Lawan...";
+            document.getElementById('opponent-role').innerText = "Bidak Hitam";
+            
             const linkDiv = document.getElementById('invite-link-container');
             const linkInput = document.getElementById('invite-link-input');
             linkDiv.classList.remove('hidden');
@@ -310,7 +299,6 @@
             currentRoomId = roomId;
             myColor = 'b';
             
-            // Update Guest DB
             update(ref(db, 'rooms/' + currentRoomId), {
                 guest: myUsername
             });
@@ -324,30 +312,32 @@
         function listenToRoom() {
             const roomRef = ref(db, 'rooms/' + currentRoomId);
             
-            // Listen Game State changes
             onValue(roomRef, (snapshot) => {
                 const data = snapshot.val();
                 if(data) {
-                    // Update opponent name
-                    if(myColor === 'w' && data.guest) document.getElementById('opponent-name').innerText = data.guest;
-                    if(myColor === 'b' && data.host) document.getElementById('opponent-name').innerText = data.host;
+                    if(myColor === 'w' && data.guest) {
+                        document.getElementById('opponent-name').innerText = data.guest;
+                        document.getElementById('opponent-role').innerText = "Bidak Hitam";
+                    }
+                    if(myColor === 'b' && data.host) {
+                        document.getElementById('opponent-name').innerText = data.host;
+                        document.getElementById('opponent-role').innerText = "Bidak Putih";
+                    }
 
-                    // Sync Board if not my turn (opponent moved)
-                    if(data.fen !== game.fen()) {
+                    if(data.fen && data.fen !== game.fen()) {
                         game.load(data.fen);
                         board.position(data.fen);
                     }
                 }
             });
 
-            // Listen Room Chat
+            let isFirstChatLoad = true;
             document.getElementById('room-chat-messages').innerHTML = '';
             onChildAdded(ref(db, 'rooms/' + currentRoomId + '/chat'), (snapshot) => {
                 renderChatMessage(snapshot.val(), 'room-chat-messages');
             });
         }
 
-        // Global Chat
         onChildAdded(ref(db, 'globalChat'), (snapshot) => {
             renderChatMessage(snapshot.val(), 'global-chat-messages');
         });
@@ -356,11 +346,7 @@
             const input = document.getElementById('global-chat-input');
             const text = input.value.trim();
             if(text) {
-                push(ref(db, 'globalChat'), {
-                    name: myUsername,
-                    text: text,
-                    type: 'chat'
-                });
+                push(ref(db, 'globalChat'), { name: myUsername, text: text, type: 'chat' });
                 input.value = '';
             }
         };
@@ -370,27 +356,22 @@
             const input = document.getElementById('room-chat-input');
             const text = input.value.trim();
             if(text) {
-                push(ref(db, 'rooms/' + currentRoomId + '/chat'), {
-                    name: myUsername,
-                    text: text,
-                    type: 'chat'
-                });
+                push(ref(db, 'rooms/' + currentRoomId + '/chat'), { name: myUsername, text: text, type: 'chat' });
                 input.value = '';
             }
         };
 
-        // Enter keys for chat
         document.getElementById('global-chat-input').addEventListener('keypress', e => { if (e.key === 'Enter') sendGlobalChat(); });
         document.getElementById('room-chat-input').addEventListener('keypress', e => { if (e.key === 'Enter') sendRoomChat(); });
 
-        // Chat Renderer
         function renderChatMessage(data, containerId) {
             const chatBox = document.getElementById(containerId);
+            if(!chatBox) return;
             const wrapper = document.createElement('div');
             
             if(data.type === 'system') {
-                wrapper.className = "flex justify-center my-2 lg:my-3";
-                wrapper.innerHTML = `<div class="text-center text-[10px] lg:text-[11px] uppercase tracking-wider text-gray-500 bg-gray-800/50 px-3 py-1 rounded-full">${data.text}</div>`;
+                wrapper.className = "flex justify-center my-2";
+                wrapper.innerHTML = `<div class="text-center text-[10px] uppercase tracking-wider text-gray-500 bg-gray-800/50 px-3 py-1 rounded-full">${data.text}</div>`;
             } else {
                 const isMe = data.name === myUsername;
                 wrapper.className = `flex ${isMe ? 'justify-end' : 'justify-start'} mb-2`;
@@ -407,7 +388,6 @@
 
         lucide.createIcons();
 
-        // Check if joined via URL
         const urlParams = new URLSearchParams(window.location.search);
         const roomFromUrl = urlParams.get('room');
         if(roomFromUrl) {
