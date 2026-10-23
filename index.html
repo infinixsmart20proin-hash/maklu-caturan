@@ -32,7 +32,6 @@
 </head>
 <body class="bg-dark text-white h-screen flex flex-col md:flex-row overflow-hidden font-sans no-select">
     
-    <!-- Header Mobile -->
     <header class="md:hidden bg-panel border-b border-gray-800 p-4 flex justify-between items-center z-30 shrink-0 shadow-md">
         <h1 class="text-xl font-bold text-accent flex items-center gap-2"><i data-lucide="swords" class="w-5 h-5"></i> ChessArena</h1>
         <button onclick="toggleSidebar()" class="text-gray-300 hover:text-white p-2 rounded-lg bg-gray-800"><i data-lucide="menu" class="w-5 h-5"></i></button>
@@ -40,7 +39,6 @@
 
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity duration-300 opacity-0 pointer-events-none"></div>
 
-    <!-- Sidebar -->
     <aside id="sidebar" class="fixed md:relative inset-y-0 left-0 z-50 w-64 bg-panel border-r border-gray-800 flex flex-col transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out h-full shadow-2xl md:shadow-none">
         <div class="p-6 border-b border-gray-800 hidden md:block">
             <h1 class="text-2xl font-bold text-accent flex items-center gap-2"><i data-lucide="swords"></i> ChessArena</h1>
@@ -69,10 +67,8 @@
         </nav>
     </aside>
     
-        <!-- Main Content -->
     <main class="flex-1 flex flex-col relative bg-[#151515] overflow-hidden">
         
-        <!-- View: Dashboard -->
         <div id="view-dashboard" class="flex-1 p-4 md:p-8 view-section overflow-y-auto">
             <h2 class="text-2xl md:text-3xl font-bold mb-6">Dashboard Utama</h2>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
@@ -84,7 +80,6 @@
             </div>
         </div>
 
-        <!-- View: Global Chat -->
         <div id="view-global-chat" class="flex-1 p-4 md:p-8 view-section hidden flex flex-col h-full overflow-hidden">
             <h2 class="text-2xl md:text-3xl font-bold mb-4 shrink-0">Global Chat</h2>
             <div class="flex-1 bg-panel rounded-xl border border-gray-800 flex flex-col overflow-hidden max-w-4xl w-full mx-auto">
@@ -96,7 +91,6 @@
             </div>
         </div>
 
-        <!-- View: Create Room -->
         <div id="view-create-room" class="flex-1 p-4 md:p-8 view-section hidden overflow-y-auto">
             <h2 class="text-2xl md:text-3xl font-bold mb-6">Lawan Pemain (1v1)</h2>
             <div class="bg-panel p-5 md:p-6 rounded-xl border border-gray-800 max-w-lg">
@@ -109,7 +103,6 @@
             </div>
         </div>
 
-        <!-- View: Game Room -->
         <div id="view-game-room" class="flex-1 hidden flex-col lg:flex-row h-full overflow-hidden">
             
             <div class="flex-1 flex flex-col items-center justify-start lg:justify-center p-2 lg:p-8 relative overflow-y-auto shrink-0">
@@ -166,8 +159,7 @@
         </div>
     </main>
     
-    <!-- FIREBASE MODULE SCRIPT -->
-    <script type="module">
+        <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
         import { getDatabase, ref, set, push, onValue, onChildAdded, update } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
 
@@ -182,7 +174,8 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        // Menambahkan URL Database secara eksplisit agar terhubung ke server Asia
+        const db = getDatabase(app, "https://chees-arena-default-rtdb.asia-southeast1.firebasedatabase.app");
 
         let myUsername = "Player_" + Math.floor(Math.random() * 10000);
         let currentRoomId = null;
@@ -331,7 +324,6 @@
                 }
             });
 
-            let isFirstChatLoad = true;
             document.getElementById('room-chat-messages').innerHTML = '';
             onChildAdded(ref(db, 'rooms/' + currentRoomId + '/chat'), (snapshot) => {
                 renderChatMessage(snapshot.val(), 'room-chat-messages');
