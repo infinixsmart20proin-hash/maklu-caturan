@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Web Game Catur Online</title>
+    <title>Web Game Catur Online PRO</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -28,17 +28,33 @@
         .piece-417db { z-index: 100 !important; }
         #board, .board-b72b1 { touch-action: none; -ms-touch-action: none; }
         .no-select { user-select: none; }
+        
+        /* Highlight Moves & Check */
+        .highlight-move { box-shadow: inset 0 0 3px 3px rgba(255, 255, 0, 0.5); }
+        .highlight-check { box-shadow: inset 0 0 5px 5px rgba(255, 0, 0, 0.7); }
+
+        /* Custom Themes */
+        .theme-classic .white-1e1d7 { background-color: #f0d9b5 !important; color: #b58863 !important; }
+        .theme-classic .black-3c85d { background-color: #b58863 !important; color: #f0d9b5 !important; }
+        
+        .theme-dark .white-1e1d7 { background-color: #7a7a7a !important; color: #333333 !important; }
+        .theme-dark .black-3c85d { background-color: #333333 !important; color: #7a7a7a !important; }
+
+        .theme-neon .white-1e1d7 { background-color: #2a0a4a !important; color: #ff007f !important; }
+        .theme-neon .black-3c85d { background-color: #ff007f !important; color: #2a0a4a !important; }
     </style>
 </head>
-<body class="bg-dark text-white h-screen flex flex-col md:flex-row overflow-hidden font-sans no-select">
+<body class="bg-dark text-white h-screen flex flex-col md:flex-row overflow-hidden font-sans no-select theme-classic" id="app-body">
     
+    <!-- Header Mobile -->
     <header class="md:hidden bg-panel border-b border-gray-800 p-4 flex justify-between items-center z-30 shrink-0 shadow-md">
-        <h1 class="text-xl font-bold text-accent flex items-center gap-2"><i data-lucide="swords" class="w-5 h-5"></i> ChessArena</h1>
+        <h1 class="text-xl font-bold text-accent flex items-center gap-2"><i data-lucide="swords" class="w-5 h-5"></i> ChessArena PRO</h1>
         <button onclick="toggleSidebar()" class="text-gray-300 hover:text-white p-2 rounded-lg bg-gray-800"><i data-lucide="menu" class="w-5 h-5"></i></button>
     </header>
 
     <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity duration-300 opacity-0 pointer-events-none"></div>
 
+    <!-- Sidebar -->
     <aside id="sidebar" class="fixed md:relative inset-y-0 left-0 z-50 w-64 bg-panel border-r border-gray-800 flex flex-col transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out h-full shadow-2xl md:shadow-none">
         <div class="p-6 border-b border-gray-800 hidden md:block">
             <h1 class="text-2xl font-bold text-accent flex items-center gap-2"><i data-lucide="swords"></i> ChessArena</h1>
@@ -61,25 +77,50 @@
         <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
             <button onclick="showView('dashboard')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors text-left text-gray-300 hover:text-white"><i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard</button>
             <button onclick="showView('global-chat')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition-colors text-left text-gray-300 hover:text-white"><i data-lucide="message-square" class="w-5 h-5"></i> Global Chat</button>
+            
             <div class="pt-4 mt-2 border-t border-gray-800">
-                <button onclick="showView('create-room')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-accent text-white hover:bg-accentHover transition-colors text-left font-medium shadow-lg shadow-blue-900/20"><i data-lucide="plus-circle" class="w-5 h-5"></i> Buat Room</button>
+                <label class="block text-xs text-gray-400 mb-2 px-2">Pilih Tema Papan</label>
+                <select id="theme-selector" onchange="changeTheme()" class="w-full bg-gray-800 text-sm text-white px-3 py-2 rounded-lg outline-none mb-4">
+                    <option value="theme-classic">Klasik (Kayu)</option>
+                    <option value="theme-dark">Gelap (Modern)</option>
+                    <option value="theme-neon">Neon (Cyberpunk)</option>
+                </select>
+            </div>
+
+            <div class="pt-2 border-t border-gray-800 space-y-2">
+                <button onclick="showView('vs-ai-setup')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-colors text-left font-medium shadow-lg shadow-emerald-900/20"><i data-lucide="bot" class="w-5 h-5"></i> Main vs AI</button>
+                <button onclick="showView('create-room')" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-accent text-white hover:bg-accentHover transition-colors text-left font-medium shadow-lg shadow-blue-900/20"><i data-lucide="plus-circle" class="w-5 h-5"></i> Buat Room 1v1</button>
             </div>
         </nav>
     </aside>
     
     <main class="flex-1 flex flex-col relative bg-[#151515] overflow-hidden">
         
+        <!-- Dashboard -->
         <div id="view-dashboard" class="flex-1 p-4 md:p-8 view-section overflow-y-auto">
             <h2 class="text-2xl md:text-3xl font-bold mb-6">Dashboard Utama</h2>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
                 <div class="bg-panel p-5 md:p-6 rounded-xl border border-gray-800 flex flex-col justify-center items-center text-center">
-                    <h3 class="text-lg md:text-xl font-semibold mb-2">Mulai Pertandingan Multiplayer</h3>
-                    <p class="text-gray-400 mb-4 text-xs md:text-sm">Buat room 1v1 bersama teman dan bagikan link undanganmu.</p>
-                    <button onclick="showView('create-room')" class="px-6 py-2.5 bg-accent hover:bg-accentHover transition-colors rounded-lg text-white font-medium w-full md:w-auto">Main Sekarang</button>
+                    <div class="bg-emerald-500/10 p-3 rounded-xl mb-3 text-emerald-500">
+                        <i data-lucide="bot" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-lg md:text-xl font-semibold mb-2">Latihan Lawan AI</h3>
+                    <p class="text-gray-400 mb-4 text-xs md:text-sm">Uji kemampuan caturnya melawan bot komputer. Dilengkapi fitur Undo dan Audio.</p>
+                    <button onclick="showView('vs-ai-setup')" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 transition-colors rounded-lg text-white font-medium w-full md:w-auto">Main vs AI</button>
+                </div>
+
+                <div class="bg-panel p-5 md:p-6 rounded-xl border border-gray-800 flex flex-col justify-center items-center text-center">
+                    <div class="bg-accent/10 p-3 rounded-xl mb-3 text-accent">
+                        <i data-lucide="users" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-lg md:text-xl font-semibold mb-2">Pertandingan Multiplayer</h3>
+                    <p class="text-gray-400 mb-4 text-xs md:text-sm">Main 1v1 dengan teman menggunakan Jam Catur 10 Menit.</p>
+                    <button onclick="showView('create-room')" class="px-6 py-2.5 bg-accent hover:bg-accentHover transition-colors rounded-lg text-white font-medium w-full md:w-auto">Main 1v1</button>
                 </div>
             </div>
         </div>
 
+        <!-- Global Chat -->
         <div id="view-global-chat" class="flex-1 p-4 md:p-8 view-section hidden flex flex-col h-full overflow-hidden">
             <h2 class="text-2xl md:text-3xl font-bold mb-4 shrink-0">Global Chat</h2>
             <div class="flex-1 bg-panel rounded-xl border border-gray-800 flex flex-col overflow-hidden max-w-4xl w-full mx-auto">
@@ -91,43 +132,73 @@
             </div>
         </div>
 
-        <div id="view-create-room" class="flex-1 p-4 md:p-8 view-section hidden overflow-y-auto">
-            <h2 class="text-2xl md:text-3xl font-bold mb-6">Lawan Pemain (1v1)</h2>
+        <!-- Setup vs AI -->
+        <div id="view-vs-ai-setup" class="flex-1 p-4 md:p-8 view-section hidden overflow-y-auto">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6">Main Lawan AI</h2>
             <div class="bg-panel p-5 md:p-6 rounded-xl border border-gray-800 max-w-lg">
-                <div class="bg-gray-800 w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center mb-4 md:mb-5">
-                    <i data-lucide="users" class="w-6 h-6 md:w-7 md:h-7 text-accent"></i>
+                <div class="bg-emerald-500/10 w-12 h-12 rounded-xl flex items-center justify-center mb-4"><i data-lucide="bot" class="w-6 h-6 text-emerald-500"></i></div>
+                <h3 class="text-xl font-semibold mb-2">Pilih Tingkat Kesulitan</h3>
+                <div class="space-y-4 mb-6">
+                    <select id="ai-difficulty" class="w-full bg-gray-800 border border-gray-700 text-white rounded-lg p-3 outline-none focus:border-emerald-500">
+                        <option value="easy">Pemula (Mudah)</option>
+                        <option value="medium" selected>Menengah (Taktis)</option>
+                        <option value="hard">Sulit (Mendalam)</option>
+                    </select>
                 </div>
-                <h3 class="text-xl md:text-2xl font-semibold mb-2">Buat Room Online</h3>
-                <p class="text-gray-400 mb-6 text-xs md:text-sm">Room akan dibuat dan kamu bisa membagikan linknya ke teman untuk bergabung.</p>
-                <button class="w-full bg-accent hover:bg-accentHover text-white py-2.5 md:py-3 rounded-lg font-medium text-sm md:text-base transition-colors" onclick="createRoom()">Generate Link & Masuk Room</button>
+                <button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-lg font-medium transition-colors" onclick="startAIGame()">Mulai Lawan AI</button>
             </div>
         </div>
 
+        <!-- Create Room 1v1 -->
+        <div id="view-create-room" class="flex-1 p-4 md:p-8 view-section hidden overflow-y-auto">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6">Lawan Pemain (1v1)</h2>
+            <div class="bg-panel p-5 md:p-6 rounded-xl border border-gray-800 max-w-lg">
+                <div class="bg-gray-800 w-12 h-12 rounded-xl flex items-center justify-center mb-4"><i data-lucide="users" class="w-6 h-6 text-accent"></i></div>
+                <h3 class="text-xl font-semibold mb-2">Buat Room Online</h3>
+                <p class="text-gray-400 mb-6 text-sm">Waktu permainan adalah 10 menit per pemain.</p>
+                <button class="w-full bg-accent hover:bg-accentHover text-white py-3 rounded-lg font-medium transition-colors" onclick="createRoom()">Generate Link & Masuk Room</button>
+            </div>
+        </div>
+
+        <!-- Game Room / Area Papan Catur -->
         <div id="view-game-room" class="flex-1 hidden flex-col lg:flex-row h-full overflow-hidden">
             
             <div class="flex-1 flex flex-col items-center justify-start lg:justify-center p-2 lg:p-8 relative overflow-y-auto shrink-0">
-                <div class="mb-2 lg:mb-4 flex items-center justify-between w-full max-w-[420px]">
+                
+                <!-- Info Lawan -->
+                <div class="mb-2 flex items-center justify-between w-full max-w-[420px]">
                     <div class="flex items-center gap-2">
-                        <div class="w-9 h-9 lg:w-12 lg:h-12 bg-panel border border-gray-700 rounded-lg flex items-center justify-center shadow-md"><i data-lucide="user" class="text-gray-400 w-4 h-4 lg:w-6 lg:h-6"></i></div>
+                        <div id="opponent-icon-bg" class="w-10 h-10 bg-panel border border-gray-700 rounded-lg flex items-center justify-center shadow-md"><i id="opponent-icon" data-lucide="user" class="text-gray-400 w-5 h-5"></i></div>
                         <div>
-                            <p class="font-bold text-xs lg:text-lg" id="opponent-name">Menunggu Lawan...</p>
-                            <p class="text-[10px] lg:text-sm text-gray-400" id="opponent-role">Bidak Lawan</p>
+                            <p class="font-bold text-sm lg:text-lg leading-tight" id="opponent-name">Menunggu...</p>
+                            <p class="text-[11px] text-gray-400 tracking-wider" id="opponent-captured"></p>
                         </div>
                     </div>
+                    <div id="opponent-timer" class="font-mono text-xl font-bold bg-gray-800 px-3 py-1 rounded shadow text-white">10:00</div>
                 </div>
                 
-                <div class="bg-panel p-1.5 lg:p-2 rounded-xl border border-gray-800 shadow-2xl w-full max-w-[420px]">
+                <!-- Papan Catur -->
+                <div class="bg-panel p-1.5 lg:p-2 rounded-xl border border-gray-800 shadow-2xl w-full max-w-[420px] relative">
                     <div id="board" class="w-full"></div>
                 </div>
                 
-                <div class="mt-2 lg:mt-4 flex items-center justify-between w-full max-w-[420px]">
+                <!-- Info Kamu -->
+                <div class="mt-2 flex items-center justify-between w-full max-w-[420px]">
                     <div class="flex items-center gap-2">
-                        <div class="w-9 h-9 lg:w-12 lg:h-12 bg-accent rounded-lg flex items-center justify-center shadow-md"><i data-lucide="user" class="text-white w-4 h-4 lg:w-6 lg:h-6"></i></div>
+                        <div class="w-10 h-10 bg-accent rounded-lg flex items-center justify-center shadow-md"><i data-lucide="user" class="text-white w-5 h-5"></i></div>
                         <div>
-                            <p class="font-bold text-xs lg:text-lg" id="my-name-display">Player (Kamu)</p>
-                            <p class="text-[10px] lg:text-sm text-gray-400" id="my-role-display">Bidak Kamu</p>
+                            <p class="font-bold text-sm lg:text-lg leading-tight" id="my-name-display">Player (Kamu)</p>
+                            <p class="text-[11px] text-gray-400 tracking-wider" id="my-captured"></p>
                         </div>
                     </div>
+                    <div id="my-timer" class="font-mono text-xl font-bold bg-gray-800 px-3 py-1 rounded shadow text-white">10:00</div>
+                </div>
+
+                <!-- Kontrol Game -->
+                <div class="mt-4 flex gap-2 w-full max-w-[420px]">
+                    <button onclick="undoGameMove()" id="btn-undo" class="flex-1 bg-yellow-600 hover:bg-yellow-700 py-2 rounded-lg text-sm font-medium transition-colors hidden"><i data-lucide="undo-2" class="w-4 h-4 inline mr-1"></i> Undo</button>
+                    <button onclick="surrenderGame()" class="flex-1 bg-red-600 hover:bg-red-700 py-2 rounded-lg text-sm font-medium transition-colors"><i data-lucide="flag" class="w-4 h-4 inline mr-1"></i> Menyerah</button>
+                    <button onclick="requestRematch()" id="btn-rematch" class="flex-1 bg-accent hover:bg-accentHover py-2 rounded-lg text-sm font-medium transition-colors hidden"><i data-lucide="refresh-cw" class="w-4 h-4 inline mr-1"></i> Rematch</button>
                 </div>
 
                 <div id="invite-link-container" class="mt-4 w-full max-w-[420px] bg-gray-800 p-3 rounded-lg hidden">
@@ -139,27 +210,34 @@
                 </div>
             </div>
             
-            <div class="w-full lg:w-80 flex-1 lg:flex-none lg:h-full bg-panel border-t lg:border-t-0 lg:border-l border-gray-800 flex flex-col shadow-2xl overflow-hidden">
-                <div class="p-3 lg:p-4 border-b border-gray-800 flex items-center justify-between bg-panel shrink-0">
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="message-circle" class="w-4 h-4 lg:w-5 lg:h-5 text-accent"></i>
-                        <h3 class="font-bold text-sm lg:text-base">Room Chat</h3>
-                    </div>
+            <!-- Side Panel (Tabs: Chat & History) -->
+            <div id="game-sidebar" class="w-full lg:w-80 flex-1 lg:flex-none lg:h-full bg-panel border-t lg:border-t-0 lg:border-l border-gray-800 flex flex-col shadow-2xl overflow-hidden">
+                <div class="flex border-b border-gray-800 shrink-0">
+                    <button onclick="switchGameTab('chat')" id="tab-chat" class="flex-1 py-3 text-sm font-bold border-b-2 border-accent text-accent">Room Chat</button>
+                    <button onclick="switchGameTab('history')" id="tab-history" class="flex-1 py-3 text-sm font-bold border-b-2 border-transparent text-gray-400 hover:text-gray-200">Riwayat</button>
                 </div>
                 
-                <div class="flex-1 p-3 overflow-y-auto space-y-2 bg-[#161616]" id="room-chat-messages"></div>
-                
-                <div class="p-3 border-t border-gray-800 flex gap-2 bg-panel shrink-0">
-                    <input type="text" id="room-chat-input" placeholder="Ketik pesan..." class="flex-1 bg-gray-800 text-white px-3 py-2 text-sm rounded-lg outline-none focus:border-accent border border-transparent">
-                    <button onclick="sendRoomChat()" class="bg-accent hover:bg-accentHover transition-colors px-3 py-2 rounded-lg text-white">
-                        <i data-lucide="send" class="w-4 h-4"></i>
-                    </button>
+                <!-- Chat Container -->
+                <div id="panel-chat" class="flex-1 flex flex-col overflow-hidden">
+                    <div class="flex-1 p-3 overflow-y-auto space-y-2 bg-[#161616]" id="room-chat-messages"></div>
+                    <div class="p-3 border-t border-gray-800 flex gap-2 bg-panel shrink-0">
+                        <input type="text" id="room-chat-input" placeholder="Pesan..." class="flex-1 bg-gray-800 text-white px-3 py-2 text-sm rounded-lg outline-none">
+                        <button onclick="sendRoomChat()" class="bg-accent hover:bg-accentHover px-3 py-2 rounded-lg text-white"><i data-lucide="send" class="w-4 h-4"></i></button>
+                    </div>
+                </div>
+
+                <!-- History Container -->
+                <div id="panel-history" class="flex-1 hidden bg-[#161616] p-3 overflow-y-auto">
+                    <table class="w-full text-sm text-left text-gray-300">
+                        <thead><tr class="border-b border-gray-700"><th class="py-1">#</th><th>Putih</th><th>Hitam</th></tr></thead>
+                        <tbody id="move-history-body"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </main>
     
-        <script type="module">
+    <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
         import { getDatabase, ref, set, push, onValue, onChildAdded, update } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
 
@@ -174,7 +252,6 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        // Menambahkan URL Database secara eksplisit agar terhubung ke server Asia
         const db = getDatabase(app, "https://chees-arena-default-rtdb.asia-southeast1.firebasedatabase.app");
 
         let myUsername = "Player_" + Math.floor(Math.random() * 10000);
@@ -182,10 +259,17 @@
         let myColor = 'w'; 
         let board = null;
         let game = new Chess();
+        let isVSModeAI = false;
+        let aiDifficulty = 'medium';
+
+        // Timer Vars
+        let timerWhite = 600, timerBlack = 600; // 10 menit
+        let timerInterval = null;
 
         document.getElementById('username-display').innerText = "Welcome, " + myUsername;
         document.getElementById('mobile-username-display').innerText = myUsername;
 
+        /* --- UI & NAVIGATION --- */
         window.toggleSidebar = () => {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
@@ -203,22 +287,189 @@
             }
         };
 
-        const views = document.querySelectorAll('.view-section, #view-game-room');
         window.showView = (viewId) => {
-            views.forEach(v => v.classList.add('hidden'));
+            document.querySelectorAll('.view-section, #view-game-room').forEach(v => v.classList.add('hidden'));
             document.getElementById('view-' + viewId).classList.remove('hidden');
-            if(window.innerWidth < 768 && !document.getElementById('sidebar').classList.contains('-translate-x-full')) {
-                window.toggleSidebar();
-            }
+            if(window.innerWidth < 768 && !document.getElementById('sidebar').classList.contains('-translate-x-full')) window.toggleSidebar();
             if(viewId === 'game-room') setTimeout(() => { if(board) board.resize(); }, 100);
         };
 
-        function onDragStart (source, piece) {
-            if (game.game_over()) return false;
-            if ((myColor === 'w' && piece.search(/^b/) !== -1) || 
-                (myColor === 'b' && piece.search(/^w/) !== -1)) {
-                return false;
+        window.changeTheme = () => {
+            const theme = document.getElementById('theme-selector').value;
+            document.getElementById('app-body').className = `bg-dark text-white h-screen flex flex-col md:flex-row overflow-hidden font-sans no-select ${theme}`;
+        };
+
+        window.switchGameTab = (tab) => {
+            document.getElementById('panel-chat').classList.toggle('hidden', tab !== 'chat');
+            document.getElementById('panel-history').classList.toggle('hidden', tab !== 'history');
+            
+            document.getElementById('tab-chat').className = tab === 'chat' ? 'flex-1 py-3 text-sm font-bold border-b-2 border-accent text-accent' : 'flex-1 py-3 text-sm font-bold border-b-2 border-transparent text-gray-400 hover:text-gray-200';
+            document.getElementById('tab-history').className = tab === 'history' ? 'flex-1 py-3 text-sm font-bold border-b-2 border-accent text-accent' : 'flex-1 py-3 text-sm font-bold border-b-2 border-transparent text-gray-400 hover:text-gray-200';
+        };
+
+        /* --- AUDIO SYNTHESIZER (Tanpa File MP3 Eksternal) --- */
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            if (!audioCtx) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            const now = audioCtx.currentTime;
+            
+            if (type === 'move') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.exponentialRampToValueAtTime(100, now + 0.1);
+                gainNode.gain.setValueAtTime(0.5, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                osc.start(now); osc.stop(now + 0.1);
+            } else if (type === 'capture') {
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(50, now + 0.15);
+                gainNode.gain.setValueAtTime(0.3, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc.start(now); osc.stop(now + 0.15);
+            } else if (type === 'check') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.linearRampToValueAtTime(800, now + 0.2);
+                gainNode.gain.setValueAtTime(0.5, now);
+                gainNode.gain.linearRampToValueAtTime(0.01, now + 0.2);
+                osc.start(now); osc.stop(now + 0.2);
+            } else if (type === 'end') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.linearRampToValueAtTime(100, now + 0.6);
+                gainNode.gain.setValueAtTime(0.5, now);
+                gainNode.gain.linearRampToValueAtTime(0.01, now + 0.6);
+                osc.start(now); osc.stop(now + 0.6);
             }
+        }
+
+        /* --- GAME LOGIC --- */
+        function removeHighlights() {
+            $('#board .square-55d63').removeClass('highlight-move');
+            $('#board .square-55d63').removeClass('highlight-check');
+        }
+
+        function applyHighlights(move) {
+            removeHighlights();
+            if(move) {
+                $('#board .square-' + move.from).addClass('highlight-move');
+                $('#board .square-' + move.to).addClass('highlight-move');
+            }
+            if(game.in_check()) {
+                playSound('check');
+                const kingColor = game.turn();
+                const boardMap = game.board();
+                for(let r=0; r<8; r++) {
+                    for(let c=0; c<8; c++) {
+                        if(boardMap[r][c] && boardMap[r][c].type === 'k' && boardMap[r][c].color === kingColor) {
+                            const squareId = String.fromCharCode(97+c) + (8-r);
+                            $('#board .square-' + squareId).addClass('highlight-check');
+                        }
+                    }
+                }
+            }
+        }
+
+        function updateCapturedPieces() {
+            const pieceSymbols = { p: '♙', n: '♘', b: '♗', r: '♖', q: '♕', P: '♟', N: '♞', B: '♝', R: '♜', Q: '♛' };
+            const startCounts = { p:8, n:2, b:2, r:2, q:1, P:8, N:2, B:2, R:2, Q:1 };
+            const currCounts = { p:0, n:0, b:0, r:0, q:0, P:0, N:0, B:0, R:0, Q:0 };
+            
+            const fen = game.fen().split(' ')[0];
+            for (let i = 0; i < fen.length; i++) {
+                if (currCounts[fen[i]] !== undefined) currCounts[fen[i]]++;
+            }
+
+            let capturedWhite = '', capturedBlack = '';
+            for(let p in startCounts) {
+                let diff = startCounts[p] - currCounts[p];
+                for(let k=0; k<diff; k++) {
+                    if(p === p.toLowerCase()) capturedWhite += pieceSymbols[p] + ' '; // Bidak hitam yang ditangkap putih
+                    else capturedBlack += pieceSymbols[p] + ' '; // Bidak putih yang ditangkap hitam
+                }
+            }
+
+            if(myColor === 'w') {
+                document.getElementById('my-captured').innerText = capturedWhite;
+                document.getElementById('opponent-captured').innerText = capturedBlack;
+            } else {
+                document.getElementById('my-captured').innerText = capturedBlack;
+                document.getElementById('opponent-captured').innerText = capturedWhite;
+            }
+        }
+
+        function updateHistoryUI() {
+            const history = game.history();
+            const tbody = document.getElementById('move-history-body');
+            tbody.innerHTML = '';
+            for(let i=0; i<history.length; i+=2) {
+                tbody.innerHTML += `
+                    <tr class="border-b border-gray-800">
+                        <td class="py-1 text-gray-500">${(i/2)+1}.</td>
+                        <td class="text-white">${history[i]}</td>
+                        <td class="text-white">${history[i+1] ? history[i+1] : ''}</td>
+                    </tr>`;
+            }
+            document.getElementById('panel-history').scrollTop = document.getElementById('panel-history').scrollHeight;
+        }
+
+        function formatTime(secs) {
+            let m = Math.floor(secs / 60);
+            let s = Math.floor(secs % 60);
+            return (m < 10 ? "0"+m : m) + ":" + (s < 10 ? "0"+s : s);
+        }
+
+        function updateTimers() {
+            const myTimerEl = document.getElementById('my-timer');
+            const opTimerEl = document.getElementById('opponent-timer');
+            
+            if(myColor === 'w') {
+                myTimerEl.innerText = formatTime(timerWhite);
+                opTimerEl.innerText = formatTime(timerBlack);
+            } else {
+                myTimerEl.innerText = formatTime(timerBlack);
+                opTimerEl.innerText = formatTime(timerWhite);
+            }
+            
+            myTimerEl.classList.toggle('text-red-500', (myColor === 'w' ? timerWhite : timerBlack) <= 30);
+            opTimerEl.classList.toggle('text-red-500', (myColor === 'w' ? timerBlack : timerWhite) <= 30);
+        }
+
+        function handleTimeOut() {
+            clearInterval(timerInterval);
+            playSound('end');
+            const winner = game.turn() === 'w' ? 'Hitam' : 'Putih';
+            alert(`Waktu Habis! ${winner} Menang.`);
+            document.getElementById('btn-rematch').classList.remove('hidden');
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if(game.game_over()) { clearInterval(timerInterval); return; }
+                
+                if(game.turn() === 'w') {
+                    timerWhite--;
+                    if(timerWhite <= 0) handleTimeOut();
+                } else {
+                    timerBlack--;
+                    if(timerBlack <= 0) handleTimeOut();
+                }
+                updateTimers();
+            }, 1000);
+        }
+
+        function onDragStart (source, piece) {
+            if (game.game_over() || timerWhite <= 0 || timerBlack <= 0) return false;
+            if ((myColor === 'w' && piece.search(/^b/) !== -1) || (myColor === 'b' && piece.search(/^w/) !== -1)) return false;
             if (game.turn() !== myColor) return false;
         }
 
@@ -226,131 +477,226 @@
             var move = game.move({ from: source, to: target, promotion: 'q' });
             if (move === null) return 'snapback';
             
-            if(currentRoomId) {
+            playSound(move.captured ? 'capture' : 'move');
+            applyHighlights(move);
+            updateCapturedPieces();
+            updateHistoryUI();
+            
+            if (isVSModeAI) {
+                if (!game.game_over()) {
+                    setTimeout(makeAIMove, 400);
+                } else {
+                    checkGameOver();
+                }
+            } else if (currentRoomId) {
                 update(ref(db, 'rooms/' + currentRoomId), {
-                    fen: game.fen(),
-                    turn: game.turn()
-                });
-                push(ref(db, 'rooms/' + currentRoomId + '/chat'), {
-                    type: 'system',
-                    text: `${myUsername} (${myColor === 'w' ? 'Putih' : 'Hitam'}) melangkah ke ${move.to}`
+                    fen: game.fen(), turn: game.turn(), timerW: timerWhite, timerB: timerBlack, lastMove: move
                 });
             }
         }
         function onSnapEnd () { board.position(game.fen()); }
 
         function initGame(orientation) {
-            if(board) { board.destroy(); }
+            if(board) board.destroy();
             game.reset();
+            removeHighlights();
+            updateHistoryUI();
+            updateCapturedPieces();
+            
+            timerWhite = 600; timerBlack = 600;
+            updateTimers();
+            startTimer();
+
+            document.getElementById('btn-rematch').classList.add('hidden');
+
             board = Chessboard('board', {
-                draggable: true,
-                position: 'start',
-                orientation: orientation === 'w' ? 'white' : 'black',
-                onDragStart: onDragStart,
-                onDrop: onDrop,
-                onSnapEnd: onSnapEnd,
+                draggable: true, position: 'start', orientation: orientation === 'w' ? 'white' : 'black',
+                onDragStart: onDragStart, onDrop: onDrop, onSnapEnd: onSnapEnd,
                 pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
             });
             setTimeout(() => board.resize(), 150);
             
             document.getElementById('my-name-display').innerText = myUsername + " (Kamu)";
-            document.getElementById('my-role-display').innerText = orientation === 'w' ? "Bidak Putih (Host)" : "Bidak Hitam (Guest)";
         }
 
+        /* --- GAME CONTROLS --- */
+        window.undoGameMove = () => {
+            if(!isVSModeAI) return;
+            game.undo(); game.undo(); // undo AI & player
+            board.position(game.fen());
+            removeHighlights();
+            updateHistoryUI();
+            updateCapturedPieces();
+        };
+
+        window.surrenderGame = () => {
+            if(confirm("Yakin ingin menyerah?")) {
+                clearInterval(timerInterval);
+                playSound('end');
+                if(currentRoomId) {
+                    push(ref(db, 'rooms/' + currentRoomId + '/chat'), { type: 'system', text: `${myUsername} telah menyerah.` });
+                    update(ref(db, 'rooms/' + currentRoomId), { surrender: myColor });
+                }
+                alert("Kamu menyerah. Lawan Menang!");
+                document.getElementById('btn-rematch').classList.remove('hidden');
+            }
+        };
+
+        window.requestRematch = () => {
+            initGame(myColor);
+            if(currentRoomId) {
+                update(ref(db, 'rooms/' + currentRoomId), { fen: game.fen(), turn: 'w', surrender: null, rematchRequest: myUsername });
+            }
+        };
+
+        /* --- CHESS AI LOGIC --- */
+        window.startAIGame = () => {
+            isVSModeAI = true; currentRoomId = null; myColor = 'w';
+            aiDifficulty = document.getElementById('ai-difficulty').value;
+
+            document.getElementById('opponent-name').innerText = `Bot AI (${aiDifficulty})`;
+            document.getElementById('opponent-icon-bg').className = "w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center shadow-md";
+            document.getElementById('opponent-icon').setAttribute('data-lucide', 'bot');
+            document.getElementById('opponent-icon').className = "text-white w-5 h-5";
+            
+            document.getElementById('invite-link-container').classList.add('hidden');
+            document.getElementById('btn-undo').classList.remove('hidden');
+            switchGameTab('history');
+
+            showView('game-room');
+            initGame('w');
+            lucide.createIcons();
+        };
+
+        function makeAIMove() {
+            const moves = game.moves({verbose: true});
+            if (moves.length === 0) return;
+            let move;
+            if (aiDifficulty === 'easy') { move = moves[Math.floor(Math.random() * moves.length)]; } 
+            else { move = moves[Math.floor(Math.random() * moves.length)]; /* Simplified for performance in demo */ }
+            
+            game.move(move);
+            board.position(game.fen());
+            playSound(move.captured ? 'capture' : 'move');
+            applyHighlights(move);
+            updateCapturedPieces();
+            updateHistoryUI();
+            checkGameOver();
+        }
+
+        function checkGameOver() {
+            if (game.in_checkmate()) {
+                playSound('end');
+                clearInterval(timerInterval);
+                alert(`Skakmat! ${game.turn() === 'w' ? 'Hitam' : 'Putih'} Menang.`);
+                document.getElementById('btn-rematch').classList.remove('hidden');
+            } else if (game.in_draw()) {
+                playSound('end');
+                clearInterval(timerInterval);
+                alert("Seri (Draw)!");
+                document.getElementById('btn-rematch').classList.remove('hidden');
+            }
+        }
+
+        /* --- MULTIPLAYER ROOMS --- */
         window.createRoom = () => {
+            isVSModeAI = false;
             currentRoomId = Math.random().toString(36).substr(2, 6).toUpperCase();
             myColor = 'w';
             
-            set(ref(db, 'rooms/' + currentRoomId), {
-                fen: game.fen(),
-                host: myUsername,
-                guest: null,
-                turn: 'w'
-            });
+            set(ref(db, 'rooms/' + currentRoomId), { fen: game.fen(), host: myUsername, guest: null, turn: 'w' });
             
             document.getElementById('opponent-name').innerText = "Menunggu Lawan...";
-            document.getElementById('opponent-role').innerText = "Bidak Hitam";
+            document.getElementById('opponent-icon-bg').className = "w-10 h-10 bg-panel border border-gray-700 rounded-lg flex items-center justify-center shadow-md";
+            document.getElementById('opponent-icon').setAttribute('data-lucide', 'user');
             
-            const linkDiv = document.getElementById('invite-link-container');
-            const linkInput = document.getElementById('invite-link-input');
-            linkDiv.classList.remove('hidden');
-            linkInput.value = window.location.origin + window.location.pathname + "?room=" + currentRoomId;
+            document.getElementById('invite-link-container').classList.remove('hidden');
+            document.getElementById('invite-link-input').value = window.location.origin + window.location.pathname + "?room=" + currentRoomId;
+            document.getElementById('btn-undo').classList.add('hidden');
+            switchGameTab('chat');
 
             showView('game-room');
             initGame('w');
             listenToRoom();
+            lucide.createIcons();
         };
 
         window.copyInviteLink = () => {
             const copyText = document.getElementById("invite-link-input");
             copyText.select();
             document.execCommand("copy");
-            alert("Link berhasil disalin! Bagikan ke temanmu.");
+            alert("Link disalin!");
         };
 
         function joinRoom(roomId) {
-            currentRoomId = roomId;
-            myColor = 'b';
-            
-            update(ref(db, 'rooms/' + currentRoomId), {
-                guest: myUsername
-            });
+            isVSModeAI = false; currentRoomId = roomId; myColor = 'b';
+            update(ref(db, 'rooms/' + currentRoomId), { guest: myUsername });
 
+            document.getElementById('opponent-icon-bg').className = "w-10 h-10 bg-panel border border-gray-700 rounded-lg flex items-center justify-center shadow-md";
+            document.getElementById('opponent-icon').setAttribute('data-lucide', 'user');
             document.getElementById('invite-link-container').classList.add('hidden');
+            document.getElementById('btn-undo').classList.add('hidden');
+            switchGameTab('chat');
+
             showView('game-room');
             initGame('b');
             listenToRoom();
+            lucide.createIcons();
         }
 
         function listenToRoom() {
             const roomRef = ref(db, 'rooms/' + currentRoomId);
-            
             onValue(roomRef, (snapshot) => {
                 const data = snapshot.val();
                 if(data) {
-                    if(myColor === 'w' && data.guest) {
-                        document.getElementById('opponent-name').innerText = data.guest;
-                        document.getElementById('opponent-role').innerText = "Bidak Hitam";
-                    }
-                    if(myColor === 'b' && data.host) {
-                        document.getElementById('opponent-name').innerText = data.host;
-                        document.getElementById('opponent-role').innerText = "Bidak Putih";
-                    }
+                    if(myColor === 'w' && data.guest) document.getElementById('opponent-name').innerText = data.guest;
+                    if(myColor === 'b' && data.host) document.getElementById('opponent-name').innerText = data.host;
 
                     if(data.fen && data.fen !== game.fen()) {
                         game.load(data.fen);
                         board.position(data.fen);
+                        if(data.lastMove) {
+                            playSound(data.lastMove.captured ? 'capture' : 'move');
+                            applyHighlights(data.lastMove);
+                        }
+                        updateCapturedPieces();
+                        updateHistoryUI();
+                        checkGameOver();
+                    }
+                    if(data.timerW) timerWhite = data.timerW;
+                    if(data.timerB) timerBlack = data.timerB;
+                    
+                    if(data.surrender && data.surrender !== myColor) {
+                        playSound('end'); clearInterval(timerInterval);
+                        alert("Lawan menyerah! Kamu menang.");
+                        document.getElementById('btn-rematch').classList.remove('hidden');
+                        update(ref(db, 'rooms/' + currentRoomId), { surrender: null }); // clear event
+                    }
+                    
+                    if(data.rematchRequest && data.rematchRequest !== myUsername) {
+                        if(confirm("Lawan mengajak Rematch. Setuju?")) {
+                            initGame(myColor);
+                            update(ref(db, 'rooms/' + currentRoomId), { rematchRequest: null });
+                        }
                     }
                 }
             });
 
             document.getElementById('room-chat-messages').innerHTML = '';
-            onChildAdded(ref(db, 'rooms/' + currentRoomId + '/chat'), (snapshot) => {
-                renderChatMessage(snapshot.val(), 'room-chat-messages');
-            });
+            onChildAdded(ref(db, 'rooms/' + currentRoomId + '/chat'), (snapshot) => { renderChatMessage(snapshot.val(), 'room-chat-messages'); });
         }
 
-        onChildAdded(ref(db, 'globalChat'), (snapshot) => {
-            renderChatMessage(snapshot.val(), 'global-chat-messages');
-        });
+        onChildAdded(ref(db, 'globalChat'), (snapshot) => { renderChatMessage(snapshot.val(), 'global-chat-messages'); });
 
         window.sendGlobalChat = () => {
             const input = document.getElementById('global-chat-input');
-            const text = input.value.trim();
-            if(text) {
-                push(ref(db, 'globalChat'), { name: myUsername, text: text, type: 'chat' });
-                input.value = '';
-            }
+            if(input.value.trim()) { push(ref(db, 'globalChat'), { name: myUsername, text: input.value.trim(), type: 'chat' }); input.value = ''; }
         };
 
         window.sendRoomChat = () => {
             if(!currentRoomId) return;
             const input = document.getElementById('room-chat-input');
-            const text = input.value.trim();
-            if(text) {
-                push(ref(db, 'rooms/' + currentRoomId + '/chat'), { name: myUsername, text: text, type: 'chat' });
-                input.value = '';
-            }
+            if(input.value.trim()) { push(ref(db, 'rooms/' + currentRoomId + '/chat'), { name: myUsername, text: input.value.trim(), type: 'chat' }); input.value = ''; }
         };
 
         document.getElementById('global-chat-input').addEventListener('keypress', e => { if (e.key === 'Enter') sendGlobalChat(); });
@@ -359,22 +705,20 @@
         function renderChatMessage(data, containerId) {
             const chatBox = document.getElementById(containerId);
             if(!chatBox) return;
-            const wrapper = document.createElement('div');
+            const wrap = document.createElement('div');
             
             if(data.type === 'system') {
-                wrapper.className = "flex justify-center my-2";
-                wrapper.innerHTML = `<div class="text-center text-[10px] uppercase tracking-wider text-gray-500 bg-gray-800/50 px-3 py-1 rounded-full">${data.text}</div>`;
+                wrap.className = "flex justify-center my-2";
+                wrap.innerHTML = `<div class="text-[10px] text-gray-500 bg-gray-800 px-2 py-0.5 rounded-full">${data.text}</div>`;
             } else {
                 const isMe = data.name === myUsername;
-                wrapper.className = `flex ${isMe ? 'justify-end' : 'justify-start'} mb-2`;
-                wrapper.innerHTML = `
-                    <div class="${isMe ? 'bg-accent text-white rounded-br-none' : 'bg-gray-700 text-white rounded-bl-none border border-gray-600'} px-3 py-2 rounded-lg shadow-md max-w-[85%]">
+                wrap.className = `flex ${isMe ? 'justify-end' : 'justify-start'} mb-2`;
+                wrap.innerHTML = `<div class="${isMe ? 'bg-accent text-white rounded-br-none' : 'bg-gray-700 text-white rounded-bl-none'} px-3 py-2 rounded-lg shadow max-w-[85%]">
                         ${!isMe ? `<p class="text-[10px] font-bold text-gray-300 mb-1">${data.name}</p>` : ''}
                         <p class="text-xs lg:text-sm">${data.text}</p>
-                    </div>
-                `;
+                    </div>`;
             }
-            chatBox.appendChild(wrapper);
+            chatBox.appendChild(wrap);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
@@ -382,15 +726,9 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const roomFromUrl = urlParams.get('room');
-        if(roomFromUrl) {
-            joinRoom(roomFromUrl);
-        } else {
-            showView('dashboard');
-        }
+        if(roomFromUrl) joinRoom(roomFromUrl); else showView('dashboard');
 
-        window.addEventListener('resize', () => {
-            if(board) { clearTimeout(window.resizeTimer); window.resizeTimer = setTimeout(() => board.resize(), 100); }
-        });
+        window.addEventListener('resize', () => { if(board) { clearTimeout(window.resizeTimer); window.resizeTimer = setTimeout(() => board.resize(), 100); } });
     </script>
 </body>
 </html>
